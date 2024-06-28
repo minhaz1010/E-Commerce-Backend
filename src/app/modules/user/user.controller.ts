@@ -19,6 +19,23 @@ const createCustomer = catchAsyncErrors(async (req, res) => {
   });
 });
 
+const createSeller = catchAsyncErrors(async (req, res) => {
+  const { email, password } = req.body;
+  const result = await UserServices.createSellerInDatabase(
+    email,
+    password,
+    req.body.seller,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "Seller created successfully",
+    result,
+  });
+});
+
 export const UserController = {
   createCustomer,
+  createSeller,
 };
