@@ -54,6 +54,10 @@ const customerSchema = new Schema<ICustomer>(
     secondaryContactNo: {
       type: String,
     },
+      isDeleted:{
+        type: Boolean,
+          default: false,
+      }
   },
   {
     timestamps: true,

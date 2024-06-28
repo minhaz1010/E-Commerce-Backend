@@ -16,4 +16,5 @@ export interface ISeller {
   primaryContactNo: string;
   secondaryContactNo?: string;
   storeAddress: IAddress;
+  isDeleted:boolean
 }

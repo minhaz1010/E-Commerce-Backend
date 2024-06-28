@@ -42,7 +42,7 @@ const sellerSchema = new Schema<ISeller>({
   storeName: {
     type: String,
     required: true,
-    unique:true
+    unique: true,
   },
   email: {
     type: String,
@@ -66,6 +66,10 @@ const sellerSchema = new Schema<ISeller>({
     type: addressSchema,
     required: true,
   },
+  isDeleted:{
+    type:Boolean,
+    default:false,
+  }
 });
 
 export const Seller = model<ISeller>("Seller", sellerSchema);

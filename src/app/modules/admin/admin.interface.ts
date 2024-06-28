@@ -14,4 +14,5 @@ export interface IAdmin {
   password: string;
   primaryContactNo: string;
   address: IAddress;
+  isDeleted: boolean;
 }
