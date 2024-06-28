@@ -17,6 +17,11 @@ const createSellerValidation = z.object({
   }),
 });
 
+
+const updateSellerValidation = createSellerValidation.partial()
+
+
 export const SellerValidation = {
   createSellerValidation,
+    updateSellerValidation
 };
