@@ -5,6 +5,7 @@ import { UserController } from "./user.controller";
 import validateRequest from "../../middleware/validateRequest";
 import { SellerValidation } from "../seller/seller.validation";
 import { CustomerValidation } from "../customer/customer.validation";
+import { AdminValidation } from "../admin/admin.validation";
 
 const router = express.Router();
 
@@ -20,6 +21,13 @@ router.post(
   validateRequest(UserValidations.createUserValidationSchema),
   validateRequest(SellerValidation.createSellerValidation),
   UserController.createSeller,
+);
+
+router.post(
+  "/create-admin",
+  validateRequest(UserValidations.createUserValidationSchema),
+  validateRequest(AdminValidation.createAdminValidationSchema),
+  UserController.createAdmin,
 );
 
 export const UserRoutes = router;

@@ -35,7 +35,24 @@ const createSeller = catchAsyncErrors(async (req, res) => {
   });
 });
 
+const createAdmin = catchAsyncErrors(async (req, res) => {
+  const { email, password } = req.body;
+  const result = await UserServices.createAdminInDatabase(
+    email,
+    password,
+    req.body.admin,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "Admin created successfully",
+    result,
+  });
+});
+
 export const UserController = {
   createCustomer,
   createSeller,
+  createAdmin,
 };

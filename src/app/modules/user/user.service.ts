@@ -5,9 +5,11 @@ import mongoose from "mongoose";
 import AppError from "../../errors/appError";
 import httpStatus from "http-status";
 import { Customer } from "../customer/customer.model";
-import { createCustomerId, createSellerId } from "./user.utils";
+import { createAdminId, createCustomerId, createSellerId } from "./user.utils";
 import { ISeller } from "../seller/serller.interface";
 import { Seller } from "../seller/seller.model";
+import { IAdmin } from "../admin/admin.interface";
+import {Admin} from "../admin/admin.model";
 
 // customer
 const createCustomerInDatabase = async (
@@ -119,8 +121,65 @@ const createSellerInDatabase = async (
     );
   }
 };
+// admin
+const createAdminInDatabase = async (
+  email: string,
+  password: string,
+  adminPayload: Partial<IAdmin>,
+) => {
+  const userInfo: Partial<IUser> = {};
+  userInfo.email = email;
+  userInfo.password = password;
+  userInfo.userId = await createAdminId();
+  userInfo.role = "admin";
+  userInfo.isDeleted = false;
+  userInfo.status = "regular";
+  // console.log({ userInfo });
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    const newUser = await User.create([userInfo], { session });
+    if (newUser.length <= 0) {
+      throw new AppError(httpStatus.FORBIDDEN, "Sorry can not create user");
+    }
+    // console.log({ newUser });
+    adminPayload.id = newUser[0]._id;
+    adminPayload.email = newUser[0].email;
+    adminPayload.password = newUser[0].password;
+    adminPayload.adminId = newUser[0].userId;
+
+    const admin = await Admin.create([adminPayload], { session });
+    if (admin.length <= 0) {
+      throw new AppError(httpStatus.FORBIDDEN, "Sorry can not create admin");
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return admin;
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    console.log({ error }, "error admin");
+    if (error?.code === 11000) {
+      throw new AppError(
+        httpStatus.CONFLICT,
+        `Duplicate key error  ${JSON.stringify(error?.keyValue)}`,
+      );
+    }
+
+    // console.log(error.responseCode)
+    // console.log({ error.responseCode });
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Sorry can not create user and admin",
+    );
+  }
+};
 
 export const UserServices = {
   createCustomerInDatabase,
   createSellerInDatabase,
+  createAdminInDatabase,
 };

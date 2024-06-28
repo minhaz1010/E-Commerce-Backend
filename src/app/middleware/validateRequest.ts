@@ -9,6 +9,7 @@ const validateRequest = (schema: AnyZodObject) => {
         body: req.body,
         customer: req.body.customer,
         seller: req.body.seller,
+        admin: req.body.admin,
         cookies: req.cookies,
       });
 
