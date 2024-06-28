@@ -105,7 +105,10 @@ const createSellerInDatabase = async (
     await session.endSession();
     console.log({ error }, "error seller");
     if (error?.code === 11000) {
-      throw new AppError(httpStatus.CONFLICT, `Duplicate key error  ${JSON.stringify(error?.keyValue)}`);
+      throw new AppError(
+        httpStatus.CONFLICT,
+        `Duplicate key error  ${JSON.stringify(error?.keyValue)}`,
+      );
     }
 
     // console.log(error.responseCode)
