@@ -1,7 +1,8 @@
 import express from "express";
 import { UserRoutes } from "../modules/user/user.route";
-import {SellerRoutes} from "../modules/seller/seller.route";
-import {CustomerRoutes} from "../modules/customer/customer.route";
+import { SellerRoutes } from "../modules/seller/seller.route";
+import { CustomerRoutes } from "../modules/customer/customer.route";
+import { ProductRoutes } from "../modules/products/product.route";
 
 const router = express.Router();
 
@@ -12,12 +13,16 @@ const modularRoute = [
   },
   {
     path: "/sellers",
-    route: SellerRoutes
+    route: SellerRoutes,
   },
   {
     path: "/customers",
-    route: CustomerRoutes
-  }
+    route: CustomerRoutes,
+  },
+  {
+    path: "/products",
+    route: ProductRoutes,
+  },
 ];
 
 modularRoute.forEach((route) => router.use(route.path, route.route));
