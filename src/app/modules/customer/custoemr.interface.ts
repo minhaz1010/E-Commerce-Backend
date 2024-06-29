@@ -15,5 +15,6 @@ export interface ICustomer {
   primaryContactNo: string;
   secondaryContactNo?: string;
   address: IAddress;
-  isDeleted:boolean
+  isDeleted: boolean;
+  cart: Types.ObjectId[];
 }

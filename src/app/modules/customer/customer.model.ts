@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import { IAddress, ICustomer } from "./custoemr.interface";
-import { string } from "zod";
 
 const addressSchema = new Schema<IAddress>({
   division: {
@@ -54,10 +53,16 @@ const customerSchema = new Schema<ICustomer>(
     secondaryContactNo: {
       type: String,
     },
-      isDeleted:{
-        type: Boolean,
-          default: false,
-      }
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    cart: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Cart",
+      },
+    ],
   },
   {
     timestamps: true,
