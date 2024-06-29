@@ -12,4 +12,10 @@ export interface IProducts {
   productImages?: [string];
   productStatus: "available" | "out-of-stock";
   sellerId: Types.ObjectId;
+
+
+
+
+
+
 }

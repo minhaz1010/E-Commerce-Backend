@@ -22,3 +22,9 @@ router.patch(
 router.delete("/:id", ProductController.deleteProduct);
 
 export const ProductRoutes = router;
+
+
+
+
+
+

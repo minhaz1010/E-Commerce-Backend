@@ -67,3 +67,9 @@ export const ProductController = {
   updateProduct,
   deleteProduct,
 };
+
+
+
+
+
+

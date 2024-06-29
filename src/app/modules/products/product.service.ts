@@ -59,3 +59,9 @@ export const ProductService = {
   updateAProductInDatabase,
   deleteSingleProductFromDatabase,
 };
+
+
+
+
+
+
