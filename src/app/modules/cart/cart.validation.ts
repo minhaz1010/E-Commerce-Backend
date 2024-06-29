@@ -7,6 +7,6 @@ const createCartValidationSchema = z.object({
   }),
 });
 
-const CartValidations = {
+export const CartValidations = {
   createCartValidationSchema,
 };
