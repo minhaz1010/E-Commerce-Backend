@@ -6,14 +6,15 @@ import { ICustomer } from "./custoemr.interface";
 import { User } from "../user/user.model";
 import { ICart } from "../cart/cart.interface";
 import { Cart } from "../cart/cart.model";
-import {Product} from "../products/product.model";
+import { Product } from "../products/product.model";
 
+// ? get all customer
 const getAllCustomerFromDatabase = async () => {
   const result = await Customer.find({ isDeleted: false });
   return result;
 };
 
-// get single user
+// ? get single customer
 const getSingleCustomerFromDatabase = async (id: string) => {
   const result = await Customer.findById(id).populate("id");
   if (!result) {
@@ -22,7 +23,7 @@ const getSingleCustomerFromDatabase = async (id: string) => {
   return result;
 };
 
-// delete single user
+// ?  delete single customer
 const deleteSingleCustomerFromDatabase = async (id: string) => {
   const customerId = await Customer.findById(id);
   if (!customerId) {
@@ -66,6 +67,7 @@ const deleteSingleCustomerFromDatabase = async (id: string) => {
   }
 };
 
+// ? update a customer
 const updateACustomerInDatabase = async (
   id: string,
   customerPayload: Partial<ICustomer>,
@@ -86,9 +88,12 @@ const updateACustomerInDatabase = async (
   return result;
 };
 
+
+// * add product into the cart
+
 const addProductToCartInDatabase = async (
-    customerId: string,
-    cartPayload: ICart,
+  customerId: string,
+  cartPayload: ICart,
 ) => {
   const session = await mongoose.startSession();
   const { productId, quantity } = cartPayload;
@@ -116,35 +121,43 @@ const addProductToCartInDatabase = async (
       cartItem = await newCartItem.save({ session });
 
       if (!cartItem) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Failed to create cart item");
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "Failed to create cart item",
+        );
       }
 
       const cartIntoCustomer = await Customer.findByIdAndUpdate(
-          customerId,
-          {
-            $push: { cart: cartItem._id },
-          },
-          { new: true, session },
+        customerId,
+        {
+          $push: { cart: cartItem._id },
+        },
+        { new: true, session },
       );
 
       if (!cartIntoCustomer) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Failed to add cart item to customer");
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "Failed to add cart item to customer",
+        );
       }
-
     } else {
       cartItem.quantity += quantity;
       await cartItem.save({ session });
 
       const cartIntoCustomer = await Customer.findByIdAndUpdate(
-          customerId,
-          {
-            $addToSet: { cart: cartItem._id }, // Use $addToSet to avoid duplicates
-          },
-          { new: true, session },
+        customerId,
+        {
+          $addToSet: { cart: cartItem._id }, // Use $addToSet to avoid duplicates
+        },
+        { new: true, session },
       );
 
       if (!cartIntoCustomer) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Failed to update cart item in customer");
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "Failed to update cart item in customer",
+        );
       }
     }
 
@@ -160,11 +173,19 @@ const addProductToCartInDatabase = async (
   }
 };
 
+// * customer will see all the cart details of his
+
 const cartDetails = async (cutomerId: string) => {
-  const result = await  Customer.findById(cutomerId).populate({
-    path: 'cart',
-    populate: { path: 'productId' ,model:"Product",select:"productName productPrice" },
-  }).select("cart customerName")
+  const result = await Customer.findById(cutomerId)
+    .populate({
+      path: "cart",
+      populate: {
+        path: "productId",
+        model: "Product",
+        select: "productName productPrice",
+      },
+    })
+    .select("cart customerName");
   return result;
 };
 
