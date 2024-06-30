@@ -77,6 +77,21 @@ const getProductsFromCart = catchAsyncErrors(async (req, res) => {
   });
 });
 
+
+const updateCartDetails = catchAsyncErrors(async (req,res)=>{
+  console.log(req.params)
+  const {customerId,productId} = req.params;
+  const {quantity}  = req.body;
+
+  const result = await CustomerService.updateCartDetailsOnASpecificProduct(customerId,productId,quantity);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "cart details updated successfully",
+    result
+  })
+})
+
 export const CustomerController = {
   getAllCustomer,
   getASingleCustomer,
@@ -84,4 +99,5 @@ export const CustomerController = {
   updateACustomer,
   addProductIntoCart,
   getProductsFromCart,
+  updateCartDetails
 };

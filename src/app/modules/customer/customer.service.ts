@@ -88,7 +88,6 @@ const updateACustomerInDatabase = async (
   return result;
 };
 
-
 // * add product into the cart
 
 const addProductToCartInDatabase = async (
@@ -189,6 +188,20 @@ const cartDetails = async (cutomerId: string) => {
   return result;
 };
 
+// * update a cart details
+// ? now we are giving customerId in params but after working with jwt we don't need
+const updateCartDetailsOnASpecificProduct = async (customerId: string,productId:string,quantity:number) => {
+  const product = await Cart.findOne({productId});
+  if(!product){
+    throw  new AppError(httpStatus.NOT_FOUND,'There is no product found to update the cart');
+  }
+  const finalQuantity = product.quantity + quantity;
+
+  const updatedCart = await  Cart.findOneAndUpdate({productId},{quantity:Math.abs(finalQuantity)},{new: true});
+
+  return updatedCart;
+};
+
 export const CustomerService = {
   getAllCustomerFromDatabase,
   getSingleCustomerFromDatabase,
@@ -196,4 +209,5 @@ export const CustomerService = {
   updateACustomerInDatabase,
   addProductToCartInDatabase,
   cartDetails,
+  updateCartDetailsOnASpecificProduct
 };

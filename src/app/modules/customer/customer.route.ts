@@ -14,6 +14,8 @@ router.patch("/:id", CustomerController.updateACustomer);
 
 router.delete("/:id", CustomerController.deleteASCustomer);
 
+// now i am giving customerid in params but after working with authentication and authorization we don't need this
+
 router.post(
   "/:customerId/cart",
   validateRequest(CartValidations.createCartValidationSchema),
@@ -21,5 +23,8 @@ router.post(
 );
 
 router.get("/:customerId/cart", CustomerController.getProductsFromCart);
+
+
+router.patch("/:customerId/:productId/cart",CustomerController.updateCartDetails)
 
 export const CustomerRoutes = router;
