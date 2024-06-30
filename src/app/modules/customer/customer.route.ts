@@ -25,6 +25,10 @@ router.post(
 router.get("/:customerId/cart", CustomerController.getProductsFromCart);
 
 
+
+// update cart quantity of a specific product
 router.patch("/:customerId/:productId/cart",CustomerController.updateCartDetails)
 
+// delete a product from cart
+router.delete("/:customerId/:productId/cart",CustomerController.deleteCartItemFromCart)
 export const CustomerRoutes = router;

@@ -92,6 +92,17 @@ const updateCartDetails = catchAsyncErrors(async (req,res)=>{
   })
 })
 
+const deleteCartItemFromCart = catchAsyncErrors(async (req,res)=>{
+  const result = await CustomerService.deleteProductFromCartFromDatabase(req.params.customerId,req.params.productId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "cart item removed successfully",
+    result
+  })
+})
+
 export const CustomerController = {
   getAllCustomer,
   getASingleCustomer,
@@ -99,5 +110,6 @@ export const CustomerController = {
   updateACustomer,
   addProductIntoCart,
   getProductsFromCart,
-  updateCartDetails
+  updateCartDetails,
+  deleteCartItemFromCart
 };

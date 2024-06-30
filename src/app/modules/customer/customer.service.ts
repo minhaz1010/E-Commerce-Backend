@@ -7,6 +7,7 @@ import { User } from "../user/user.model";
 import { ICart } from "../cart/cart.interface";
 import { Cart } from "../cart/cart.model";
 import { Product } from "../products/product.model";
+import * as http from "node:http";
 
 // ? get all customer
 const getAllCustomerFromDatabase = async () => {
@@ -202,6 +203,40 @@ const updateCartDetailsOnASpecificProduct = async (customerId: string,productId:
   return updatedCart;
 };
 
+// * delete a product from cart
+const deleteProductFromCartFromDatabase = async (customerId:string,productId:string) =>{
+  const product = await  Cart.findOne({productId});
+  if(!product) {
+    throw  new AppError(httpStatus.NOT_FOUND,'No product to delete')
+  }
+  const session = await  mongoose.startSession();
+  try{
+    session.startTransaction();
+    const updatedCart = await  Cart.findOneAndDelete({productId},{ session });
+    if(!updatedCart) {
+      throw  new AppError(httpStatus.BAD_REQUEST, "Failed to delete the cart item");
+    }
+    const updatedCartId = updatedCart._id;
+    const updatedCustomerCartField = await Customer.findByIdAndUpdate(customerId,{
+      $pull:{cart:updatedCartId}
+    },{
+      new:true,
+      session
+    })
+    if(!updatedCustomerCartField){
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete the cart item from customer ");
+    }
+    await  session.commitTransaction();
+    await  session.endSession();
+    return null;
+  }catch(error){
+    await  session.abortTransaction();
+    await  session.endSession();
+    console.log({error},'cart deletion error');
+    throw new AppError(httpStatus.BAD_REQUEST,'something went wrong to delete the cart item')
+  }
+}
+
 export const CustomerService = {
   getAllCustomerFromDatabase,
   getSingleCustomerFromDatabase,
@@ -209,5 +244,6 @@ export const CustomerService = {
   updateACustomerInDatabase,
   addProductToCartInDatabase,
   cartDetails,
-  updateCartDetailsOnASpecificProduct
+  updateCartDetailsOnASpecificProduct,
+  deleteProductFromCartFromDatabase
 };
